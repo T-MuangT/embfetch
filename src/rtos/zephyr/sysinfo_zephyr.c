@@ -17,6 +17,7 @@ static const sysinfo_static_t board_info = {
     .hostname       = CONFIG_BOARD,
     .os_name        = "Zephyr RTOS",
     .mcu            = CONFIG_SOC,
+    .build_date     = __DATE__ " " __TIME__,
 };
 
 // Byte formatting
@@ -113,12 +114,13 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     while (logo[logo_count] != NULL) logo_count++;
 
     // Build formatted info lines to match logo
-    char os_line[64],  kernel_line[64], mcu_line[64];
+    char os_line[64],  kernel_line[64], mcu_line[64], build_line[64];
     char flash_line[64], ram_line[64];
     char uptime_line[64], heap_line[64];
 
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
+    snprintf(build_line,  sizeof(build_line),  "Build:   %s", board_info.build_date);
     snprintf(mcu_line,    sizeof(mcu_line),    "MCU:     %s", board_info.mcu);
     snprintf(flash_line,  sizeof(flash_line),  "Flash:   %s", hw.flash);
     snprintf(ram_line,    sizeof(ram_line),    "RAM:     %s", hw.ram);
@@ -129,11 +131,12 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     info[2]  = separator;
     info[3]  = os_line;
     info[4]  = kernel_line;
-    info[5]  = mcu_line;
-    info[6]  = flash_line;
-    info[7]  = ram_line;
-    info[8]  = uptime_line;
-    info[9]  = heap_line;
+    info[5]  = build_line;
+    info[6]  = mcu_line;
+    info[7]  = flash_line;
+    info[8]  = ram_line;
+    info[9]  = uptime_line;
+    info[10] = heap_line;
 
     // Print side by side
     for (int i = 0; i < logo_count; i++) {

@@ -20,6 +20,7 @@ typedef struct {
     const char *hostname;       // Name of board, not actual hostname.
     const char *os_name;
     const char *mcu;
+    const char *build_date;
 } sysinfo_static_t;
 
 //Hardware info.
