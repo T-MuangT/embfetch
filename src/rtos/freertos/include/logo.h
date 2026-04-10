@@ -1,26 +1,31 @@
 #ifndef LOGO_H
 #define LOGO_H
 
-#define ANSI_BLUE  "\033[34m"
-#define ANSI_MAGENTA "\033[35m"
-#define ANSI_RESET "\033[0m"
+#define ANSI_GREEN   "\033[32m"
+#define ANSI_RESET   "\033[0m"
 
 static const char *logo[] = {
-    ANSI_BLUE "                                             " ANSI_RESET,
-    ANSI_BLUE "                            =:::::::------=  " ANSI_RESET,
-    ANSI_BLUE "                           ++++-:-------=++  " ANSI_RESET,
-    ANSI_BLUE "                           ++++++=--==+++++  " ANSI_RESET,
-    ANSI_BLUE "                          +++++++++++++++++  " ANSI_RESET,
-    ANSI_BLUE "                         =++++++++****+++++  " ANSI_RESET,
-    ANSI_BLUE "                         +++++++**##***++++  " ANSI_RESET,
-    ANSI_BLUE "                        ++++++*#####*****++  " ANSI_RESET,
-    ANSI_BLUE "                        ++++*#######******+  " ANSI_RESET,
-    ANSI_MAGENTA " ======                " ANSI_BLUE "+++*########*****     " ANSI_RESET,
-    ANSI_MAGENTA "  ====                 " ANSI_BLUE "+*##****+             " ANSI_RESET,
-    ANSI_MAGENTA "    ==      ====    **+                      " ANSI_RESET,
-    ANSI_MAGENTA "     -+++++======+###*                       " ANSI_RESET,
-    ANSI_MAGENTA "      ++++          **                       " ANSI_RESET,
-    ANSI_MAGENTA "                                             " ANSI_RESET
+    ANSI_GREEN "-=++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-",
+    ANSI_GREEN "+=:.                                                                                      .=+",
+    ANSI_GREEN "+=:      " ANSI_RESET "..::... " ANSI_GREEN ".............    ..................    ..........         ............   .=+",
+    ANSI_GREEN "+=:     " ANSI_RESET ":#@@# @=" ANSI_GREEN " :------------:.. .:--------------.. ..:----------:.     ..:----------.   .=+",
+    ANSI_GREEN "+=:     " ANSI_RESET "-@  # @+" ANSI_GREEN " :-----:::------:..:-------------:...:-----::::-----:.. .:-----:::::::.   .=+",
+    ANSI_GREEN "+=:     " ANSI_RESET ".*@@@@*" ANSI_GREEN "  :----:.  ..-----.     .:----.     .-----:..   .:----:. .-----.     ...   .=+",
+    ANSI_GREEN "+=:.             :----:....:----:      .:----.    .:----:.      .:----:..------:....      .=+",
+    ANSI_GREEN "++:.    " ANSI_RESET "-@@@# @-" ANSI_GREEN " :------------:..      .:----.    .:----:.      .:----:...---------::.    .=+",
+    ANSI_GREEN "++:.    " ANSI_RESET "-@  # @+" ANSI_GREEN " :------------:.       .:----.    .:----:.      .:----:.   .::--------:.  .=+",
+    ANSI_GREEN "++:.    " ANSI_RESET ":@@@@@@" ANSI_GREEN "  :----:...:----:.      .:----.     :----:.      .:----.        ..:----:.. .=+",
+    ANSI_GREEN "++:.             :----:.  .:----.      .:----.     .:----:..   .:----:. ...      .----:.. .=+",
+    ANSI_GREEN "++:.    " ANSI_RESET ":@#" ANSI_GREEN "      :----:.  ..----:.     .:----.      .:--------------:.  .:----:-------..  .=+",
+    ANSI_GREEN "++:.    " ANSI_RESET "-@@@@@@" ANSI_GREEN "  :----:.   .:----:.    .:----.       ...:--------:...   .:---------:..    .=+",
+    ANSI_GREEN "++:. " ANSI_RESET "=@                                                                                   .=+",
+    ANSI_GREEN "++:. " ANSI_RESET "=@  @*      :=====================================================================:. .=+",
+    ANSI_GREEN "++:. " ANSI_RESET ".=#@@@@@@@  +@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-." ANSI_GREEN " .=+",
+    ANSI_GREEN "++:.     " ANSI_RESET "=" ANSI_GREEN "                                                                                .=+",
+    ANSI_GREEN "=+:.......................................................................................:=+",
+    ANSI_GREEN ":=+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=-"
 };
+
+static const int logo_lines = 19;
 
 #endif
