@@ -120,23 +120,23 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
 
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
+    snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %uh %um %us", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
     snprintf(build_line,  sizeof(build_line),  "Build:   %s", board_info.build_date);
     snprintf(mcu_line,    sizeof(mcu_line),    "MCU:     %s", board_info.mcu);
-    snprintf(flash_line,  sizeof(flash_line),  "Flash:   %s", hw.flash);
-    snprintf(ram_line,    sizeof(ram_line),    "RAM:     %s", hw.ram);
-    snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %uh %um %us", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
+    snprintf(ram_line,    sizeof(ram_line),    "Memory:  %s", hw.ram);
     snprintf(heap_line,   sizeof(heap_line),   "Heap:    %s used / %s free", dyn.heap_used, dyn.heap_free);
+    snprintf(flash_line,  sizeof(flash_line),  "Flash:   %s", hw.flash);
 
     info[1]  = header;
     info[2]  = separator;
     info[3]  = os_line;
     info[4]  = kernel_line;
-    info[5]  = build_line;
-    info[6]  = mcu_line;
-    info[7]  = flash_line;
+    info[5]  = uptime_line;
+    info[6]  = build_line;
+    info[7]  = mcu_line;
     info[8]  = ram_line;
-    info[9]  = uptime_line;
-    info[10] = heap_line;
+    info[9]  = heap_line;
+    info[10]  = flash_line;
 
     // Print side by side
     for (int i = 0; i < logo_count; i++) {
