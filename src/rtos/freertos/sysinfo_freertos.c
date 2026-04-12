@@ -4,17 +4,18 @@
 #include "task.h"
 #include <embed_sysinfo.h>
 #include "logo.h"
+#include "uart.h"
 
 // Static board info fetching.
 static const sysinfo_static_t board_info = {
     .username       = "root",
-    .hostname       = "stm32f411ceu6-disco",
+    .hostname       = "stm32f411ceu6-disco", // Hardcoded
     .os_name        = "FreeRTOS",
-    .mcu            = "STM32F411CEU6",
+    .mcu            = "STM32F411CEU6", // Hardcoded
     .build_date     = __DATE__ " " __TIME__,
 };
 
-// Byte formatting
+// Byte formatting.
 static void format_size(char *dst, size_t len, size_t bytes) {
     if (bytes >= 1024 * 1024) {
         snprintf(dst, len, "%uMB", (unsigned int)(bytes >> 20));
@@ -43,9 +44,9 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
 
 // Dynamic info fetching.
 void sysinfo_fetch(sysinfo_dynamic_t *dst) {
-    // Kernel version
+    // Kernel version (Recommended to hardcode or use vendor's version)
     snprintf(dst->kernel_version, sizeof(dst->kernel_version),
-             "FreeRTOS %s", tskKERNEL_VERSION_STRING);
+             "FreeRTOS %d", tskKERNEL_VERSION_BUILD);
 
     // Uptime from tick count
     // NOTE: TickType_t is uint32_t by default — wraps after ~49 days at 1000Hz.
@@ -107,7 +108,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
 
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
-    snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %uh %um %us", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
+    snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %luh %lum %lus", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
     snprintf(build_line,  sizeof(build_line),  "Build:   %s", board_info.build_date);
     snprintf(mcu_line,    sizeof(mcu_line),    "MCU:     %s", board_info.mcu);
     snprintf(ram_line,    sizeof(ram_line),    "Memory:  %s", hw.ram);
