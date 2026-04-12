@@ -1,5 +1,5 @@
-#ifndef SYSINFO_H
-#define SYSINFO_H
+#ifndef EMBED_SYSINFO_H
+#define EMBED_SYSINFO_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -11,7 +11,7 @@ typedef void (*sysinfo_putline_fn)(void *ctx, const char *line);
 #include <zephyr/shell/shell.h>
     void sysinfo_print_shell(const struct shell *sh);
 #elif defined(FREERTOS_CONFIG_H) || defined(INC_FREERTOS_H)
-    /* Leave it empty */
+    void sysinfo_print_uart(void);
 #endif
 
 // Static board info.
@@ -49,4 +49,4 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx);
 void sysinfo_print_file(FILE *f);
 void sysinfo_print_puts(void (*puts_fn)(const char *));
 
-#endif
+#endif // EMBED_SYSINFO_H

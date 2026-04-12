@@ -3,7 +3,7 @@
 #include <zephyr/sys/mem_stats.h>
 #include <zephyr/sys/sys_heap.h>
 #include <zephyr/shell/shell.h>
-#include <src/include/sysinfo.h>
+#include <embed_sysinfo.h>
 #include <logo.h>
 
 #if defined(CONFIG_FLASH)
