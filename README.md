@@ -5,6 +5,7 @@ Embfetch is a C library for displaying a system information in summary along wit
 ## Installation
 
 Depending on which system you may have, the library may be installed in various embedded, RTOSes, and high-level language abstraction machines.
+
 Currently, the supported systems are Zephyr RTOS and FreeRTOS.
 ### Zephyr RTOS
 1. Make sure `CONFIG_SHELL` is `=y` to make sure the command can be used.
@@ -21,7 +22,9 @@ static int cmd_embfetch(const struct shell *sh, size_t argc, char **argv)
     return 0;
 }
 ```
-And `SHELL_CMD_REGISTER(embfetch, NULL, "Show system information and logo", cmd_embfetch);` into your C source file responsible for making shell.
+And 
+`SHELL_CMD_REGISTER(embfetch, NULL, "Show system information and logo", cmd_embfetch);` into your C source file responsible for making shell.
+
 5. Add `src/sysinfo_core.c src/sysinfo_zephyr.c` into your kernel's `CMakeLists.txt`.
 6. Run `west build -p always -b (your target board)` to clean up the previously built kernel and compile the library into the kernel.
 7. After compilation, your kernel's shell will now have `embfetch` as available command.
