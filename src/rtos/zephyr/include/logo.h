@@ -20,7 +20,8 @@ static const char *logo[] = {
     ANSI_MAGENTA "    ==      ====    **+                      " ANSI_RESET,
     ANSI_MAGENTA "     -+++++======+###*                       " ANSI_RESET,
     ANSI_MAGENTA "      ++++          **                       " ANSI_RESET,
-    ANSI_MAGENTA "                                             " ANSI_RESET
+    ANSI_MAGENTA "                                             " ANSI_RESET,
+    NULL
 };
 
 #endif

@@ -9,9 +9,9 @@
 // Static board info fetching.
 static const sysinfo_static_t board_info = {
     .username       = "root",
-    .hostname       = "stm32f411ceu6-disco", // Hardcoded
+    .hostname       = "mps2", // Hardcoded
     .os_name        = "FreeRTOS",
-    .mcu            = "STM32F411CEU6", // Hardcoded
+    .mcu            = "an385", // Hardcoded
     .build_date     = __DATE__ " " __TIME__,
 };
 
@@ -44,9 +44,9 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
 
 // Dynamic info fetching.
 void sysinfo_fetch(sysinfo_dynamic_t *dst) {
-    // Kernel version (Recommended to hardcode or use vendor's version)
+    // Kernel version
     snprintf(dst->kernel_version, sizeof(dst->kernel_version),
-             "FreeRTOS %d", tskKERNEL_VERSION_BUILD);
+             "FreeRTOS %d.%d.%d", tskKERNEL_VERSION_MAJOR, tskKERNEL_VERSION_MINOR, tskKERNEL_VERSION_BUILD);
 
     // Uptime from tick count
     // NOTE: TickType_t is uint32_t by default — wraps after ~49 days at 1000Hz.
@@ -75,36 +75,13 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     sysinfo_hwinfo_t hw;
     sysinfo_hwinfo_fetch(&hw);
 
-    char header[64];
-    char separator[32];
-    snprintf(header,    sizeof(header),    "%s@%s", board_info.username, board_info.hostname);
+    char header[64], separator[32];
+    snprintf(header, sizeof(header), "%s@%s", board_info.username, board_info.hostname);
     snprintf(separator, sizeof(separator), "----------------");
-    const char *info[] = {
-        "",
-        header,
-        separator,
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        NULL
-    };
 
-    int logo_count = 0;
-    while (logo[logo_count] != NULL) logo_count++;
-
-    // Build formatted info lines to match logo
-    char os_line[64],  kernel_line[64], mcu_line[64], build_line[64];
-    char flash_line[64], ram_line[64];
-    char uptime_line[64], heap_line[64];
+    // All your data lines
+    char os_line[64], kernel_line[64], mcu_line[64], build_line[64], 
+         flash_line[64], ram_line[64], uptime_line[64], heap_line[64];
 
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
@@ -115,22 +92,26 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     snprintf(heap_line,   sizeof(heap_line),   "Heap:    %s used / %s free", dyn.heap_used, dyn.heap_free);
     snprintf(flash_line,  sizeof(flash_line),  "Flash:   %s", hw.flash);
 
-    info[1]  = header;
-    info[2]  = separator;
-    info[3]  = os_line;
-    info[4]  = kernel_line;
-    info[5]  = uptime_line;
-    info[6]  = build_line;
-    info[7]  = mcu_line;
-    info[8]  = ram_line;
-    info[9]  = heap_line;
-    info[10]  = flash_line;
+    const char *info[] = {
+        "", header, separator, os_line, kernel_line, 
+        uptime_line, build_line, mcu_line, ram_line, 
+        heap_line, flash_line
+    };
 
-    // Print side by side
-    for (int i = 0; i < logo_count; i++) {
-        const char *info_line = (info[i] != NULL) ? info[i] : "";
+    int logo_count = 0;
+    while (logo[logo_count] != NULL) logo_count++;
+    int info_count = sizeof(info) / sizeof(info[0]);
+    int total_lines = (logo_count > info_count) ? logo_count : info_count;
+
+    for (int i = 0; i < total_lines; i++) {
+        const char *logo_part = (i < logo_count) ? logo[i] : "";
+        const char *info_part = (i < info_count) ? info[i] : "";
+        
         char line[256];
-        snprintf(line, sizeof(line), "%s   %s", logo[i], info_line);
+        if (info_part[0] != '\0')
+            snprintf(line, sizeof(line), "%s\033[40G%s", logo_part, info_part);
+        else
+            snprintf(line, sizeof(line), "%s", logo_part);
         putline(ctx, line);
     }
 }
@@ -138,9 +119,10 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
 // Wrapper for shell output.
 static void uart_putline(void *ctx, const char *line) {
     (void)ctx;
-    printf("%s\n", line);
+    uart_puts(line);
+    uart_puts("\r\n");
 }
 
 void sysinfo_print_uart(void) {
     sysinfo_print(uart_putline, NULL);
-}
+} //sysinfo_freertos.c

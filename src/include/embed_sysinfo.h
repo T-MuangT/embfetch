@@ -10,6 +10,8 @@ typedef void (*sysinfo_putline_fn)(void *ctx, const char *line);
 #if defined(__ZEPHYR__)
 #include <zephyr/shell/shell.h>
     void sysinfo_print_shell(const struct shell *sh);
+#elif defined(RT_THREAD_ID) || defined(RT_USING_FINSH)
+    void sysinfo_print_rt(void);
 #elif defined(FREERTOS_CONFIG_H) || defined(INC_FREERTOS_H)
     void sysinfo_print_uart(void);
 #endif
