@@ -12,6 +12,8 @@ typedef void (*sysinfo_putline_fn)(void *ctx, const char *line);
     void sysinfo_print_shell(const struct shell *sh);
 #elif defined(RT_THREAD_ID) || defined(RT_USING_FINSH)
     void sysinfo_print_rt(void);
+#elif defined(ESP_PLATFORM)
+    void sysinfo_print_espidf(void);
 #elif defined(FREERTOS_CONFIG_H) || defined(INC_FREERTOS_H)
     void sysinfo_print_uart(void);
 #endif
@@ -19,10 +21,12 @@ typedef void (*sysinfo_putline_fn)(void *ctx, const char *line);
 // Static board info.
 typedef struct {
     const char *username;       // "root", not actual username.
-    const char *hostname;       // Name of board, not actual hostname.
     const char *os_name;
-    const char *mcu;
-    const char *build_date;
+	const char *build_date;
+#if !defined(ESP_PLATFORM)
+    const char *mcu;			// Runtime on ESP-IDF via esp_chip_info() will have both mcu and hostname info.
+    const char *hostname;   	// Name of board, not actual hostname.
+#endif
 } sysinfo_static_t;
 
 //Hardware info.
