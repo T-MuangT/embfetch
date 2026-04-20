@@ -13,7 +13,7 @@ static const char *logo[] = {
     ANSI_CYAN "###" ANSI_BRIGHT_CYAN "++++=++++                 ++++++++++      " ANSI_RESET,
     ANSI_BRIGHT_CYAN "                                    =++++    " ANSI_RESET,
     ANSI_BRIGHT_CYAN "                                       ++=+  " ANSI_RESET,
-    ANSI_BRIGHT_CYAN "                                           ++" ANSI_RESET
+    ANSI_BRIGHT_CYAN "                                           ++" ANSI_RESET,
     ANSI_BRIGHT_CYAN "                                             " ANSI_RESET,
     ANSI_BRIGHT_CYAN "                                             " ANSI_RESET,
     ANSI_BRIGHT_CYAN "                                             " ANSI_RESET,

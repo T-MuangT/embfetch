@@ -1,19 +1,34 @@
 #include <rtthread.h>
-#include <rtdevice.h> 
+#include <rtdevice.h>
+#include "rtconfig.h"
+#include "board.h"
+#include <stdio.h>
+#include <string.h>
 #include <embed_sysinfo.h>
 #include <logo.h>
 
-#if defined(CONFIG_FLASH)
-#include <zephyr/drivers/flash.h>
-#include <zephyr/devicetree.h>
+/* --- Fallback Definitions for missing hardware macros --- */
+#ifndef BOARD_NAME
+    #define BOARD_NAME "qemu-vexpress-a9"   // Hardcoded
+#endif
+
+#ifndef SOC_NAME
+    #define SOC_NAME "arm-cortex-a9"        // Hardcoded
+#endif
+
+/* Fallback for RT-Thread version if not found in rtthread.h */
+#ifndef RT_VERSION
+    #define RT_VERSION 4                    // Hardcoded
+    #define RT_SUBVERSION 0                 // Hardcoded
+    #define RT_REVISION 2                   // Hardcoded
 #endif
 
 // Static board info fetching.
 static const sysinfo_static_t board_info = {
     .username       = "root",
-    .hostname       = CONFIG_BOARD,
+    .hostname       = BOARD_NAME,
     .os_name        = "RT-Thread",
-    .mcu            = CONFIG_SOC,
+    .mcu            = SOC_NAME,
     .build_date     = __DATE__ " " __TIME__,
 };
 
@@ -31,19 +46,24 @@ static void format_size(char *dst, size_t len, size_t bytes) {
 // Hardware info fetching.
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
-    format_size(dst->ram, sizeof(dst->ram), CONFIG_SRAM_SIZE * 1024);
+    rt_uint32_t total, used, max_used;
+    rt_memory_info(&total, &used, &max_used);
+    format_size(dst->ram, sizeof(dst->ram), total);
 
-    // Flash
-#if defined(CONFIG_FLASH)
-    const struct device *flash_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_flash_controller));
-    if (device_is_ready(flash_dev)) {
-        const struct flash_parameters *fp = flash_get_parameters(flash_dev);
-        /* fp gives you write-block size, not total size — 
-           total comes from the DT partition or Kconfig */
-        format_size(dst->flash, sizeof(dst->flash), CONFIG_FLASH_SIZE * 1024);
+    // Flash. try to find MTD/flash device, fall back to board define
+#if defined(RT_USING_MTD_NOR) || defined(RT_USING_SFUD)
+    rt_device_t flash_dev = rt_device_find("norflash0");
+    if (flash_dev != RT_NULL) {
+        #ifdef BOARD_FLASH_SIZE_KB
+            format_size(dst->flash, sizeof(dst->flash), BOARD_FLASH_SIZE_KB * 1024);
+        #else
+            snprintf(dst->flash, sizeof(dst->flash), "Unknown");
+        #endif
     } else {
         snprintf(dst->flash, sizeof(dst->flash), "Unknown");
     }
+#elif defined(BOARD_FLASH_SIZE_KB)
+    format_size(dst->flash, sizeof(dst->flash), BOARD_FLASH_SIZE_KB * 1024);
 #else
     snprintf(dst->flash, sizeof(dst->flash), "Unknown");
 #endif
@@ -52,29 +72,25 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
 // Dynamic info fetching.
 void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     // Uptime and kernel version
-    uint32_t ver = sys_kernel_version_get();
     snprintf(dst->kernel_version, sizeof(dst->kernel_version),
-             "RT-Thread %d.%d.%d",
-             SYS_KERNEL_VER_MAJOR(ver),
-             SYS_KERNEL_VER_MINOR(ver),
-             SYS_KERNEL_VER_PATCHLEVEL(ver));
-    int64_t uptime_ms = k_uptime_get();
-    int64_t uptime_s  = uptime_ms / 1000;
+             "RT-Thread %ld.%ld.%ld",
+             RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    rt_tick_t ticks    = rt_tick_get();
+    uint64_t  uptime_s = (uint64_t)ticks / RT_TICK_PER_SECOND;
     dst->uptime_h = (uint32_t)(uptime_s / 3600);
     dst->uptime_m = (uint32_t)((uptime_s % 3600) / 60);
     dst->uptime_s = (uint32_t)(uptime_s % 60);
 
     // Memory heap
-    struct sys_memory_stats stats;
-    #if defined(CONFIG_SYS_HEAP_RUNTIME_STATS)
-        extern struct sys_heap _system_heap;
-        sys_heap_runtime_stats_get(&_system_heap, &stats);
-    #else
-        stats.allocated_bytes = 0;
-        stats.free_bytes = 0;
-    #endif
-    format_size(dst->heap_used, sizeof(dst->heap_used), stats.allocated_bytes);
-    format_size(dst->heap_free, sizeof(dst->heap_free), stats.free_bytes);
+#if defined(RT_USING_HEAP)
+    rt_uint32_t total, used, max_used;
+    rt_memory_info(&total, &used, &max_used);
+    format_size(dst->heap_used, sizeof(dst->heap_used), used);
+    format_size(dst->heap_free, sizeof(dst->heap_free), total - used);
+#else
+    snprintf(dst->heap_used, sizeof(dst->heap_used), "N/A");
+    snprintf(dst->heap_free, sizeof(dst->heap_free), "N/A");
+#endif
 }
 
 // Print logo and info.
@@ -89,7 +105,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     snprintf(separator, sizeof(separator), "----------------");
 
     // All your data lines
-    char os_line[64], kernel_line[64], mcu_line[64], build_line[64], 
+    char os_line[64], kernel_line[64], mcu_line[64], build_line[64],
          flash_line[64], ram_line[64], uptime_line[64], heap_line[64];
 
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
@@ -102,8 +118,8 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     snprintf(flash_line,  sizeof(flash_line),  "Flash:   %s", hw.flash);
 
     const char *info[] = {
-        "", header, separator, os_line, kernel_line, 
-        uptime_line, build_line, mcu_line, ram_line, 
+        "", header, separator, os_line, kernel_line,
+        uptime_line, build_line, mcu_line, ram_line,
         heap_line, flash_line
     };
 
@@ -115,10 +131,10 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     for (int i = 0; i < total_lines; i++) {
         const char *logo_part = (i < logo_count) ? logo[i] : "";
         const char *info_part = (i < info_count) ? info[i] : "";
-        
+
         char line[256];
         if (info_part[0] != '\0')
-            snprintf(line, sizeof(line), "%s\033[40G%s", logo_part, info_part);
+            snprintf(line, sizeof(line), "%s\033[50G%s", logo_part, info_part);
         else
             snprintf(line, sizeof(line), "%s", logo_part);
         putline(ctx, line);
@@ -126,9 +142,14 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
 }
 
 // Wrapper for shell output.
-static void zephyr_shell_putline(void *ctx, const char *line) {
-    shell_print((const struct shell *)ctx, "%s", line);
+void rt_putline(void *ctx, const char *line) {
+    rt_kprintf("%s\n", line);
 }
-void sysinfo_print_shell(const struct shell *sh) {
-    sysinfo_print(zephyr_shell_putline, (void *)sh);
+void sysinfo_print_shell(void) {
+    sysinfo_print(rt_putline, RT_NULL);
 }
+void embfetch(void) {
+    sysinfo_print_shell();
+}
+
+MSH_CMD_EXPORT(embfetch, Print system info);
