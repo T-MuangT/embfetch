@@ -41,7 +41,7 @@ static void chip_info_init(const char **mcu_name, const char **hostname) {
 // Static board info fetching.
 static const sysinfo_static_t board_info = {
     .username       = "root",
-    .os_name        = "ESP-IDF FreeRTOS",
+    .os_name        = "ESP-IDF",
 	.build_date		= __DATE__" "__TIME__,
 };
 

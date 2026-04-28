@@ -1,23 +1,16 @@
-#include <zephyr/kernel.h>
-#include <zephyr/sys/util.h>
-#include <zephyr/sys/mem_stats.h>
-#include <zephyr/sys/sys_heap.h>
-#include <zephyr/shell/shell.h>
+#include <tx_api.h>
 #include <embed_sysinfo.h>
 #include <logo.h>
-
-#if defined(CONFIG_FLASH)
-#include <zephyr/drivers/flash.h>
-#include <zephyr/devicetree.h>
-#endif
+#include <board.h> //   required for BOARD_NAME and MCU_NAME, hardcode the variables otherwise
+#include "uart.h"
 
 // Static board info fetching.
 static const sysinfo_static_t board_info = {
-    .username       = "root",
-    .hostname       = CONFIG_BOARD,
-    .os_name        = "Zephyr",
-    .mcu            = CONFIG_SOC,
-    .build_date     = __DATE__ " " __TIME__,
+    .username   = "root",
+    .hostname   = BOARD_NAME,
+    .os_name    = "ThreadX",
+    .mcu        = MCU_NAME,
+    .build_date = __DATE__ " " __TIME__,
 };
 
 // Byte formatting
@@ -33,51 +26,35 @@ static void format_size(char *dst, size_t len, size_t bytes) {
 
 // Hardware info fetching.
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
-    // RAM
-    format_size(dst->ram, sizeof(dst->ram), CONFIG_SRAM_SIZE * 1024);
-
-    // Flash
-#if defined(CONFIG_FLASH)
-    const struct device *flash_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_flash_controller));
-    if (device_is_ready(flash_dev)) {
-        const struct flash_parameters *fp = flash_get_parameters(flash_dev);
-        /* fp gives you write-block size, not total size — 
-           total comes from the DT partition or Kconfig */
-        format_size(dst->flash, sizeof(dst->flash), CONFIG_FLASH_SIZE * 1024);
-    } else {
-        snprintf(dst->flash, sizeof(dst->flash), "Unknown");
-    }
-#else
-    snprintf(dst->flash, sizeof(dst->flash), "Unknown");
-#endif
+    format_size(dst->ram,   sizeof(dst->ram),   BOARD_RAM_SIZE);
+    format_size(dst->flash, sizeof(dst->flash), BOARD_FLASH_SIZE);
 }
 
 // Dynamic info fetching.
 void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     // Uptime and kernel version
-    uint32_t ver = sys_kernel_version_get();
     snprintf(dst->kernel_version, sizeof(dst->kernel_version),
-             "Zephyr %d.%d.%d",
-             SYS_KERNEL_VER_MAJOR(ver),
-             SYS_KERNEL_VER_MINOR(ver),
-             SYS_KERNEL_VER_PATCHLEVEL(ver));
-    int64_t uptime_ms = k_uptime_get();
-    int64_t uptime_s  = uptime_ms / 1000;
+             "ThreadX %d.%d", THREADX_MAJOR_VERSION, THREADX_MINOR_VERSION);
+    ULONG ticks = tx_time_get();
+    ULONG freq   = TX_TIMER_TICKS_PER_SECOND;
+    ULONG uptime_s = ticks / freq;
     dst->uptime_h = (uint32_t)(uptime_s / 3600);
     dst->uptime_m = (uint32_t)((uptime_s % 3600) / 60);
     dst->uptime_s = (uint32_t)(uptime_s % 60);
 
     // Memory heap
-    struct sys_memory_stats stats;
-    #if defined(CONFIG_SYS_HEAP_RUNTIME_STATS)
-        extern struct sys_heap _system_heap;
-        sys_heap_runtime_stats_get(&_system_heap, &stats);
-    #else
-        stats.allocated_bytes = 0;
-        stats.free_bytes = 0;
-    #endif
-    format_size(dst->heap_used, sizeof(dst->heap_used), stats.allocated_bytes);
-    format_size(dst->heap_free, sizeof(dst->heap_free), stats.free_bytes);
+    ULONG available, fragments;
+    extern TX_BYTE_POOL app_byte_pool;
+    tx_byte_pool_info_get(&app_byte_pool,
+                      TX_NULL,
+                      &available,
+                      &fragments,
+                      TX_NULL,
+                      TX_NULL,
+                      TX_NULL);
+    ULONG total = app_byte_pool.tx_byte_pool_size;
+    format_size(dst->heap_free, sizeof(dst->heap_free), (size_t)available);
+    format_size(dst->heap_used, sizeof(dst->heap_used), (size_t)(total - available));
 }
 
 // Print logo and info.
@@ -129,9 +106,10 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
 }
 
 // Wrapper for shell output.
-static void zephyr_shell_putline(void *ctx, const char *line) {
-    shell_print((const struct shell *)ctx, "%s", line);
+static void threadx_putline(void *ctx, const char *line) {
+    uart_puts(line);
+    uart_puts("\r\n");
 }
-void sysinfo_print_shell(const struct shell *sh) {
-    sysinfo_print(zephyr_shell_putline, (void *)sh);
-} //sysinfo_zephyr.c
+void sysinfo_print_threadx(void) {
+    sysinfo_print(threadx_putline, NULL);
+} //sysinfo_threadx.c
