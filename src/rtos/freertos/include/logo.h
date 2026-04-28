@@ -5,7 +5,6 @@
 #define ANSI_RESET   "\033[0m"
 
 static const char *logo[] = {
-    ANSI_GREEN "                                  " ANSI_RESET,
     ANSI_GREEN "----------------------------------" ANSI_RESET,
     ANSI_GREEN "|  " ANSI_RESET "  _____ _______ ____   _____  " ANSI_GREEN "|" ANSI_RESET,
     ANSI_GREEN "| f" ANSI_RESET " |  __ \\__   __/ __ \\ / ____| " ANSI_GREEN "|" ANSI_RESET,
@@ -15,7 +14,6 @@ static const char *logo[] = {
     ANSI_GREEN "|  " ANSI_RESET " |_|  \\_\\ |_|  \\____/|_____/  " ANSI_GREEN "|" ANSI_RESET,
     ANSI_GREEN "|  " ANSI_RESET "                              " ANSI_GREEN "|" ANSI_RESET,
     ANSI_GREEN "----------------------------------" ANSI_RESET,
-    ANSI_GREEN "                                  " ANSI_RESET,
     NULL
 };
 

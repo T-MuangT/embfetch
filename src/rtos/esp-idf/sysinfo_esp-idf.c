@@ -125,7 +125,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     snprintf(flash_line,  sizeof(flash_line),  "Flash:   %s", hw.flash);
 
     const char *info[] = {
-        "", header, separator, os_line, kernel_line, 
+        header, separator, os_line, kernel_line, 
         uptime_line, build_line, mcu_line, ram_line, 
         heap_line, flash_line
     };

@@ -5,7 +5,6 @@
 #define ANSI_RESET   "\033[0m"
 
 static const char *logo[] = {
-    ANSI_RED "                                        " ANSI_RESET,
     ANSI_RED "                   <<<<<<<<<~           " ANSI_RESET,
     ANSI_RED "      ~    <<<<<<!   <<<<<<<<<<<        " ANSI_RESET,
     ANSI_RED "    ~<<< <<<<<<<<<<<<=   <<<<<<<<<      " ANSI_RESET,
@@ -28,7 +27,6 @@ static const char *logo[] = {
     ANSI_RED "       i<<<<   <<<<<<  ~<<<<<  <<<<=    " ANSI_RESET,
     ANSI_RED "          <<<<<<<<       <<<<<<<<       " ANSI_RESET,
     ANSI_RED "              <<<<<<<<<<<<<<<~          " ANSI_RESET,
-    ANSI_RED "                                        " ANSI_RESET,
     NULL
 };
 
