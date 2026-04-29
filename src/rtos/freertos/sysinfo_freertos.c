@@ -2,7 +2,7 @@
 #include <string.h>
 #include "FreeRTOS.h"
 #include "task.h"
-#include <embed_sysinfo.h>
+#include "embed_sysinfo.h"
 #include "logo.h"
 #include "uart.h"
 

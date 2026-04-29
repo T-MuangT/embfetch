@@ -6,7 +6,7 @@
 #include "esp_system.h"
 #include "esp_heap_caps.h"
 #include "esp_timer.h"
-#include <embed_sysinfo.h>
+#include "embed_sysinfo.h"
 #include "logo.h"
 #include "esp_idf_version.h"
 #include <inttypes.h>

@@ -3,8 +3,8 @@
 #include <zephyr/sys/mem_stats.h>
 #include <zephyr/sys/sys_heap.h>
 #include <zephyr/shell/shell.h>
-#include <embed_sysinfo.h>
-#include <logo.h>
+#include "embed_sysinfo.h"
+#include "logo.h"
 
 #if defined(CONFIG_FLASH)
 #include <zephyr/drivers/flash.h>
@@ -97,7 +97,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
 
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
-    snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %luh %lum %lus", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
+    snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %uh %um %us", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
     snprintf(build_line,  sizeof(build_line),  "Build:   %s", board_info.build_date);
     snprintf(mcu_line,    sizeof(mcu_line),    "MCU:     %s", board_info.mcu);
     snprintf(ram_line,    sizeof(ram_line),    "Memory:  %s", hw.ram);
@@ -121,7 +121,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
         
         char line[256];
         if (info_part[0] != '\0')
-            snprintf(line, sizeof(line), "%s\033[40G%s", logo_part, info_part);
+            snprintf(line, sizeof(line), "%s\033[50G%s", logo_part, info_part);
         else
             snprintf(line, sizeof(line), "%s", logo_part);
         putline(ctx, line);

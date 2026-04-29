@@ -4,8 +4,8 @@
 #include <sys/utsname.h>
 #include <unistd.h>
 #include <time.h>
-#include <embed_sysinfo.h>
-#include <logo.h>
+#include "embed_sysinfo.h"
+#include "logo.h"
 
 // Static board info fetching.
 static const sysinfo_static_t board_info = {

@@ -1,7 +1,7 @@
 #include <tx_api.h>
-#include <embed_sysinfo.h>
-#include <logo.h>
-#include <board.h> //   required for BOARD_NAME and MCU_NAME, hardcode the variables otherwise
+#include "embed_sysinfo.h"
+#include "logo.h"
+#include "board.h" //   required for BOARD_NAME and MCU_NAME, hardcode the variables otherwise
 #include "uart.h"
 
 // Static board info fetching.

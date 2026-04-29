@@ -4,8 +4,8 @@
 #include "board.h"
 #include <stdio.h>
 #include <string.h>
-#include <embed_sysinfo.h>
-#include <logo.h>
+#include "embed_sysinfo.h"
+#include "logo.h"
 
 /* --- Fallback Definitions for missing hardware macros --- */
 #ifndef BOARD_NAME
