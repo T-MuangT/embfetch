@@ -1,16 +1,21 @@
 #include <tx_api.h>
 #include "embed_sysinfo.h"
 #include "logo.h"
-#include "board.h" //   required for BOARD_NAME and MCU_NAME, hardcode the variables otherwise
+#include "board.h"      // define BOARD_NAME and MCU_NAME here, falls back to "Unknown" otherwise
 #include "uart.h"
 
 // Static board info fetching.
 static const sysinfo_static_t board_info = {
     .username   = "root",
-    .hostname   = BOARD_NAME,
     .os_name    = "ThreadX",
-    .mcu        = MCU_NAME,
     .build_date = __DATE__ " " __TIME__,
+#if defined(BOARD_NAME) && defined(MCU_NAME)
+    .hostname = BOARD_NAME,
+    .mcu      = MCU_NAME,
+#else
+    .hostname = "Unknown",
+    .mcu      = "Unknown",
+#endif
 };
 
 // Byte formatting
@@ -26,8 +31,19 @@ static void format_size(char *dst, size_t len, size_t bytes) {
 
 // Hardware info fetching.
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
-    format_size(dst->ram,   sizeof(dst->ram),   BOARD_RAM_SIZE);
+    // RAM
+#if defined(BOARD_RAM_SIZE) && BOARD_RAM_SIZE > 0
+    format_size(dst->ram, sizeof(dst->ram), BOARD_RAM_SIZE);
+#else
+    snprintf(dst->ram, sizeof(dst->ram), "Unknown");
+#endif
+
+    // Flash
+#if defined(BOARD_FLASH_SIZE) && BOARD_FLASH_SIZE > 0
     format_size(dst->flash, sizeof(dst->flash), BOARD_FLASH_SIZE);
+#else
+    snprintf(dst->flash, sizeof(dst->flash), "Unknown");
+#endif
 }
 
 // Dynamic info fetching.

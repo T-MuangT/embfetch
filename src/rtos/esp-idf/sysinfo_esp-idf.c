@@ -61,16 +61,25 @@ static void format_size(char *dst, size_t len, size_t bytes) {
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
     size_t ram = heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
-    format_size(dst->ram, sizeof(dst->ram), ram);
+    if (ram > 0)
+        format_size(dst->ram, sizeof(dst->ram), ram);
+    else
+        snprintf(dst->ram, sizeof(dst->ram), "Unknown");
 
     // Flash
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 0, 0)
-    uint32_t flash_size;
-    esp_flash_get_size(NULL, &flash_size);
+    uint32_t flash_size = 0;
+    if (esp_flash_get_size(NULL, &flash_size) != ESP_OK || flash_size == 0)
+        snprintf(dst->flash, sizeof(dst->flash), "Unknown");
+    else
+        format_size(dst->flash, sizeof(dst->flash), flash_size);
 #else
     uint32_t flash_size = spi_flash_get_chip_size();
+    if (flash_size > 0)
+        format_size(dst->flash, sizeof(dst->flash), flash_size);
+    else
+        snprintf(dst->flash, sizeof(dst->flash), "Unknown");
 #endif
-    format_size(dst->flash, sizeof(dst->flash), flash_size);
 }
 
 // Dynamic info fetching.

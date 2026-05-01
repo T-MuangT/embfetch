@@ -34,7 +34,11 @@ static void format_size(char *dst, size_t len, size_t bytes) {
 // Hardware info fetching.
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
+#if defined(CONFIG_SRAM_SIZE) && CONFIG_SRAM_SIZE > 0
     format_size(dst->ram, sizeof(dst->ram), CONFIG_SRAM_SIZE * 1024);
+#else
+    snprintf(dst->ram, sizeof(dst->ram), "Unknown");
+#endif
 
     // Flash
 #if defined(CONFIG_FLASH)

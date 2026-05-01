@@ -12,10 +12,10 @@ typedef void (*sysinfo_putline_fn)(void *ctx, const char *line);
     void sysinfo_print_shell(const struct shell *sh);
 #elif defined(RT_USING_FINSH)
     void sysinfo_print_rt(void);
-#elif defined(TX_API_H) || defined(TX_THREAD_H)
-    void sysinfo_print_threadx(void);
 #elif defined(CONFIG_NUTTX) || defined(__NuttX__)
     void sysinfo_print_nuttx(void);
+#elif defined(TX_API_H) || defined(TX_THREAD_H)
+    void sysinfo_print_threadx(void);
 #elif defined(ESP_PLATFORM)
     void sysinfo_print_espidf(void);
 #elif defined(FREERTOS_CONFIG_H) || defined(INC_FREERTOS_H)
@@ -24,9 +24,11 @@ typedef void (*sysinfo_putline_fn)(void *ctx, const char *line);
 
 // Static board info.
 typedef struct {
-    const char *username;       // "root", not actual username.
     const char *os_name;
 	const char *build_date;
+#if !defined(CONFIG_NUTTX) || !defined(__NuttX__)
+    const char *username;       // "root", not actual username. NuttX has user info.
+#endif
 #if !defined(ESP_PLATFORM)
     const char *mcu;			// Runtime on ESP-IDF via esp_chip_info() will have both mcu and hostname info.
     const char *hostname;   	// Name of board, not actual hostname.
@@ -47,6 +49,9 @@ typedef struct {
     uint32_t uptime_s;
     char     heap_used[16];
     char     heap_free[16];
+#if defined(CONFIG_NUTTX) || defined(__NuttX__)
+    char     username[32];
+#endif
 } sysinfo_dynamic_t;
 
 // Public API

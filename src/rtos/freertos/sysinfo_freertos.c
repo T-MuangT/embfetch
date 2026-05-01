@@ -5,14 +5,20 @@
 #include "embed_sysinfo.h"
 #include "logo.h"
 #include "uart.h"
+#include "board.h"      // define BOARD_NAME and MCU_NAME here, falls back to "Unknown" otherwise
 
 // Static board info fetching.
 static const sysinfo_static_t board_info = {
     .username       = "root",
-    .hostname       = "mps2", // Hardcoded
     .os_name        = "FreeRTOS",
-    .mcu            = "an385", // Hardcoded
     .build_date     = __DATE__ " " __TIME__,
+#if defined(BOARD_NAME) && defined(MCU_NAME)
+    .hostname = BOARD_NAME,
+    .mcu      = MCU_NAME,
+#else
+    .hostname = "Unknown",
+    .mcu      = "Unknown",
+#endif
 };
 
 // Byte formatting.

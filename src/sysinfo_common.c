@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <embed_sysinfo.h>
+#include "embed_sysinfo.h"
 // This file provides common wrapper functions for sysinfo.
 // The actual fetching may be done in system-specific sources such as sysinfo_zephyr.c or sysinfo_freertos.c.
 static void file_putline(void *ctx, const char *line) {

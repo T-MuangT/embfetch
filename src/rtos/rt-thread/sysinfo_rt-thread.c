@@ -48,7 +48,14 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
     rt_uint32_t total, used, max_used;
     rt_memory_info(&total, &used, &max_used);
-    format_size(dst->ram, sizeof(dst->ram), total);
+#if defined(RT_USING_MEMHEAP) || defined(RT_USING_HEAP)
+    if (total > 0)
+        format_size(dst->ram, sizeof(dst->ram), total);
+    else
+        snprintf(dst->ram, sizeof(dst->ram), "Unknown");
+#else
+    snprintf(dst->ram, sizeof(dst->ram), "Unknown");
+#endif
 
     // Flash. try to find MTD/flash device, fall back to board define
 #if defined(RT_USING_MTD_NOR) || defined(RT_USING_SFUD)

@@ -18,6 +18,13 @@ Currently, the supported systems are Zephyr RTOS, RT-Thread, Eclipse ThreadX, Fr
 2. Copy `sysinfo_common.c` from `src`, `embed_sysinfo.h` from `src/include`, `sysinfo_rt-thread.c` from `src/rtos/rt-thread`, and `logo.h` from `src/rtos/rt-thread/include` into your kernel's `applications` directory.
 3. If you use RT-Thread Studio, you can Rebuild Project. Otherwise, run `scons -j$(nproc)` to compile the library into the kernel.
 4. After compilation, your kernel's shell will now have `embfetch` as available command.
+### NuttX (Apache NuttX)
+1. Due to NuttX's native `nsh`, the library can be compiled as application.
+2. Make a new `embfetch` directory for the library in `apps/examples`.
+3. Copy `sysinfo_common.c` from `src`, `embed_sysinfo.h` from `src/include`, `embfetch_main.c`, `sysinfo_nuttx.c`, `Kconfig`, `Makefile`, `Make.defs` from `src/rtos/nuttx`, and `logo.h` from `src/rtos/nuttx/include` into `apps/examples/embfetch`.
+4. Add `source "examples/embfetch/Kconfig"` into `apps/examples/Kconfig` file.
+5. Run `make` to compile the library as application for the kernel.
+6. After compilation, your kernel's shell will now have `embfetch` as available command.
 ### ThreadX (Eclipse ThreadX, formerly Azure RTOS)
 1. ThreadX has no built-in shell option, nor the official shell library. Make sure the shell library (vendor, or custom) is set up.
 2. Copy `sysinfo_common.c` from `src`, `embed_sysinfo.h` from `src/include`, `sysinfo_threadx.c` from `src/rtos/threadx`, and `logo.h` from `src/rtos/threadx/include` into your kernel's `src` directory.

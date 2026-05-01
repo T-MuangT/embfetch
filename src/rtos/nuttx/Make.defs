@@ -1,0 +1,3 @@
+ifneq ($(CONFIG_EXAMPLES_EMBFETCH),)
+CONFIGURED_APPS += $(APPDIR)/examples/embfetch
+endif

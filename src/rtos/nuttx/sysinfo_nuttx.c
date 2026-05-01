@@ -9,12 +9,11 @@
 
 // Static board info fetching.
 static const sysinfo_static_t board_info = {
-    .username   = "root",
     .hostname   = CONFIG_ARCH_BOARD,
     .os_name    = "NuttX",
     .mcu        = CONFIG_ARCH_CHIP,
     .build_date = __DATE__ " " __TIME__,
-};;
+};
 
 // Byte formatting
 static void format_size(char *dst, size_t len, size_t bytes) {
@@ -30,7 +29,11 @@ static void format_size(char *dst, size_t len, size_t bytes) {
 // Hardware info fetching.
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
+#if defined(CONFIG_RAM_SIZE) && CONFIG_RAM_SIZE > 0
     format_size(dst->ram, sizeof(dst->ram), CONFIG_RAM_SIZE);
+#else
+    snprintf(dst->ram, sizeof(dst->ram), "Unknown");
+#endif
 
     // Flash
 #if defined(CONFIG_ARCH_HAVE_FLASH)
@@ -58,6 +61,14 @@ void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     struct mallinfo mi = mallinfo();
     format_size(dst->heap_used, sizeof(dst->heap_used), (size_t)mi.uordblks);
     format_size(dst->heap_free, sizeof(dst->heap_free), (size_t)mi.fordblks);
+
+    // Runtime username
+#if defined(CONFIG_LIBC_GETLOGIN)
+    const char *login = getlogin();
+#else
+    const char *login = getenv("USER");
+#endif
+    snprintf(dst->username, sizeof(dst->username), "%s", login ? login : "root");
 }
 
 // Print logo and info.
@@ -68,7 +79,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     sysinfo_hwinfo_fetch(&hw);
 
     char header[64], separator[32];
-    snprintf(header, sizeof(header), "%s@%s", board_info.username, board_info.hostname);
+    snprintf(header, sizeof(header), "%s@%s", dyn.username, board_info.hostname);
     snprintf(separator, sizeof(separator), "----------------");
 
     // All your data lines
@@ -77,7 +88,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
 
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
-    snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %luh %lum %lus", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
+    snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %uh %um %us", (unsigned)dyn.uptime_h, (unsigned)dyn.uptime_m, (unsigned)dyn.uptime_s);
     snprintf(build_line,  sizeof(build_line),  "Build:   %s", board_info.build_date);
     snprintf(mcu_line,    sizeof(mcu_line),    "MCU:     %s", board_info.mcu);
     snprintf(ram_line,    sizeof(ram_line),    "Memory:  %s", hw.ram);
@@ -101,7 +112,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
         
         char line[256];
         if (info_part[0] != '\0')
-            snprintf(line, sizeof(line), "%s\033[40G%s", logo_part, info_part);
+            snprintf(line, sizeof(line), "%s\033[50G%s", logo_part, info_part);
         else
             snprintf(line, sizeof(line), "%s", logo_part);
         putline(ctx, line);
