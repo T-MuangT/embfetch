@@ -5,7 +5,7 @@ Embfetch is a C library for displaying a system information in summary along wit
 ## Installation
 
 Depending on which system you may have, the library may be installed in various real-time operating systems.
-Currently, the supported systems are Zephyr RTOS, RT-Thread, Eclipse ThreadX, FreeRTOS, and ESP-IDF.
+Currently, the supported systems are Zephyr RTOS, RT-Thread, Apache NuttX, Eclipse ThreadX, Amazon FreeRTOS, and ESP-IDF.
 ### Zephyr
 1. Make sure `CONFIG_SHELL` is `=y` to make sure the command can be used.
 2. Copy `sysinfo_common.c` from `src`, `embed_sysinfo.h` from `src/include`, `sysinfo_zephyr.c` from `src/rtos/zephyr`, and `logo.h` from `src/rtos/zephyr/include` into your kernel `src` directory.
