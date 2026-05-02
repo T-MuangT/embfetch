@@ -1,8 +1,8 @@
 #include <tx_api.h>
 #include "embed_sysinfo.h"
 #include "logo.h"
-#include "board.h"      // define BOARD_NAME and MCU_NAME here, falls back to "Unknown" otherwise
 #include "uart.h"
+//#include "board.h"      // define BOARD_NAME and MCU_NAME in your board header then uncomment
 
 // Static board info fetching.
 static const sysinfo_static_t board_info = {
@@ -29,7 +29,7 @@ static void format_size(char *dst, size_t len, size_t bytes) {
     }
 }
 
-// Hardware info fetching.
+// Hardware info fetching
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
 #if defined(BOARD_RAM_SIZE) && BOARD_RAM_SIZE > 0
@@ -46,7 +46,7 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
 #endif
 }
 
-// Dynamic info fetching.
+// Dynamic info fetching
 void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     // Uptime and kernel version
     snprintf(dst->kernel_version, sizeof(dst->kernel_version),
@@ -73,21 +73,20 @@ void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     format_size(dst->heap_used, sizeof(dst->heap_used), (size_t)(total - available));
 }
 
-// Print logo and info.
+// Print logo and info
 void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     sysinfo_dynamic_t dyn;
     sysinfo_fetch(&dyn);
     sysinfo_hwinfo_t hw;
     sysinfo_hwinfo_fetch(&hw);
 
+    // All data lines
     char header[64], separator[32];
-    snprintf(header, sizeof(header), "%s@%s", board_info.username, board_info.hostname);
-    snprintf(separator, sizeof(separator), "----------------");
-
-    // All your data lines
     char os_line[64], kernel_line[64], mcu_line[64], build_line[64], 
          flash_line[64], ram_line[64], uptime_line[64], heap_line[64];
 
+    snprintf(header,      sizeof(header), "%s@%s", board_info.username, board_info.hostname);
+    snprintf(separator,   sizeof(separator), "----------------");
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
     snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %luh %lum %lus", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
@@ -121,7 +120,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     }
 }
 
-// Wrapper for shell output.
+// Wrapper for shell output
 static void threadx_putline(void *ctx, const char *line) {
     uart_puts(line);
     uart_puts("\r\n");

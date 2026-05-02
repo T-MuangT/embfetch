@@ -14,7 +14,7 @@
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 0, 0)
 #include "esp_flash.h"
 #else
-#include "esp_spi_flash.h"  // legacy header, provides spi_flash_get_chip_size()
+#include "esp_spi_flash.h"  // Legacy header, provides spi_flash_get_chip_size()
 #endif
 
 const char *mcu_name;
@@ -38,14 +38,14 @@ static void chip_info_init(const char **mcu_name, const char **hostname) {
 	}
 }
 
-// Static board info fetching.
+// Static board info fetching
 static const sysinfo_static_t board_info = {
     .username       = "root",
     .os_name        = "ESP-IDF",
 	.build_date		= __DATE__" "__TIME__,
 };
 
-// Byte formatting.
+// Byte formatting
 static void format_size(char *dst, size_t len, size_t bytes) {
     if (bytes >= 1024 * 1024) {
         snprintf(dst, len, "%uMB", (unsigned int)(bytes >> 20));
@@ -56,8 +56,8 @@ static void format_size(char *dst, size_t len, size_t bytes) {
     }
 }
 
-// Hardware info fetching. 
-// No devicetree, but the ESP-IDF API can provide flash and memory sizes.
+// Hardware info fetching
+// No devicetree, but the ESP-IDF API can provide flash and memory sizes
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
     size_t ram = heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
@@ -82,15 +82,15 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
 #endif
 }
 
-// Dynamic info fetching.
+// Dynamic info fetching
 void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     // Kernel version
     snprintf(dst->kernel_version, sizeof(dst->kernel_version),
              "FreeRTOS %d.%d.%d", tskKERNEL_VERSION_MAJOR, tskKERNEL_VERSION_MINOR, tskKERNEL_VERSION_BUILD);
 
     // Uptime from esp_timer
-    // NOTE: esp_timer does not loop back.
-    // For long-running uptime, maintain a separate overflow counter in a timer callback.
+    // NOTE: esp_timer does not loop back
+    // For long-running uptime, maintain a separate overflow counter in a timer callback
     int64_t uptime_us = esp_timer_get_time();
     uint64_t uptime_s = (uint64_t)(uptime_us / 1000000);
     dst->uptime_h = (uint32_t)(uptime_s / 3600);
@@ -98,8 +98,8 @@ void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     dst->uptime_s = (uint32_t)(uptime_s % 60);
 
     // Heap stats
-    // ESP-IDF, based on FreeRTOS, thus only exposes free heap natively; used = total - free.
-    // heap_4/heap_5 also provide heap_caps_get_minimum_free_size() for low-watermark.
+    // ESP-IDF, based on FreeRTOS, thus only exposes free heap natively; used = total - free
+    // heap_4/heap_5 also provide heap_caps_get_minimum_free_size() for low-watermark
     size_t heap_free  = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
     size_t heap_total = heap_caps_get_total_size(MALLOC_CAP_DEFAULT);
     size_t heap_used  = heap_total - heap_free;
@@ -108,7 +108,7 @@ void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     format_size(dst->heap_free, sizeof(dst->heap_free), heap_free);
 }
 
-// Print logo and info.
+// Print logo and info
 void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
 	chip_info_init(&mcu_name, &hostname);
     sysinfo_dynamic_t dyn;
@@ -116,14 +116,13 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     sysinfo_hwinfo_t hw;
     sysinfo_hwinfo_fetch(&hw);
 
+    // All data lines
     char header[64], separator[32];
-    snprintf(header, sizeof(header), "%s@%s", board_info.username, hostname);
-    snprintf(separator, sizeof(separator), "----------------");
-
-    // All your data lines
     char os_line[64], kernel_line[64], mcu_line[64], build_line[64], 
          flash_line[64], ram_line[64], uptime_line[64], heap_line[64];
 
+    snprintf(header,      sizeof(header), "%s@%s", board_info.username, hostname);
+    snprintf(separator,   sizeof(separator), "----------------");
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
 	snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %" PRIu32 "h %" PRIu32 "m %" PRIu32 "s", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
@@ -157,7 +156,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     }
 }
 
-// Wrapper for shell output.
+// Wrapper for shell output
 static void uart_putline(void *ctx, const char *line) {
     (void)ctx;
     printf("%s\r\n", line);

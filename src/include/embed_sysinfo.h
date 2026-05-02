@@ -20,6 +20,8 @@ typedef void (*sysinfo_putline_fn)(void *ctx, const char *line);
     void sysinfo_print_espidf(void);
 #elif defined(FREERTOS_CONFIG_H) || defined(INC_FREERTOS_H)
     void sysinfo_print_uart(void);
+#elif defined(osRtxVersionKernel) || defined(USING_KEIL_RTX)
+    void sysinfo_print_rtx(void (*uart_puts)(const char *));
 #endif
 
 // Static board info.

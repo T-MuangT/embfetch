@@ -7,23 +7,23 @@
 #include "embed_sysinfo.h"
 #include "logo.h"
 
-/* --- Fallback Definitions for missing hardware macros --- */
+//#include "board.h"      // define BOARD_NAME and SOC_NAME then uncomment
 #ifndef BOARD_NAME
-    #define BOARD_NAME "qemu-vexpress-a9"   // Hardcoded
+    #define BOARD_NAME "qemu-vexpress-a9"
 #endif
 
 #ifndef SOC_NAME
-    #define SOC_NAME "arm-cortex-a9"        // Hardcoded
+    #define SOC_NAME "arm-cortex-a9"
 #endif
 
-/* Fallback for RT-Thread version if not found in rtthread.h */
+// Hardcoded kernel version
 #ifndef RT_VERSION
-    #define RT_VERSION 4                    // Hardcoded
-    #define RT_SUBVERSION 0                 // Hardcoded
-    #define RT_REVISION 2                   // Hardcoded
+    #define RT_VERSION 4
+    #define RT_SUBVERSION 0
+    #define RT_REVISION 2
 #endif
 
-// Static board info fetching.
+// Static board info fetching
 static const sysinfo_static_t board_info = {
     .username       = "root",
     .hostname       = BOARD_NAME,
@@ -43,7 +43,7 @@ static void format_size(char *dst, size_t len, size_t bytes) {
     }
 }
 
-// Hardware info fetching.
+// Hardware info fetching
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
     rt_uint32_t total, used, max_used;
@@ -57,7 +57,8 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     snprintf(dst->ram, sizeof(dst->ram), "Unknown");
 #endif
 
-    // Flash. try to find MTD/flash device, fall back to board define
+    // Flash 
+    // Try to find MTD/flash device, fall back to board define
 #if defined(RT_USING_MTD_NOR) || defined(RT_USING_SFUD)
     rt_device_t flash_dev = rt_device_find("norflash0");
     if (flash_dev != RT_NULL) {
@@ -76,12 +77,14 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
 #endif
 }
 
-// Dynamic info fetching.
+// Dynamic info fetching
 void sysinfo_fetch(sysinfo_dynamic_t *dst) {
-    // Uptime and kernel version
+    // Kernel version
     snprintf(dst->kernel_version, sizeof(dst->kernel_version),
              "RT-Thread %ld.%ld.%ld",
              RT_VERSION, RT_SUBVERSION, RT_REVISION);
+    
+    // Uptime
     rt_tick_t ticks    = rt_tick_get();
     uint64_t  uptime_s = (uint64_t)ticks / RT_TICK_PER_SECOND;
     dst->uptime_h = (uint32_t)(uptime_s / 3600);
@@ -95,28 +98,25 @@ void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     format_size(dst->heap_used, sizeof(dst->heap_used), used);
     format_size(dst->heap_free, sizeof(dst->heap_free), total - used);
 #else
-    snprintf(dst->heap_used, sizeof(dst->heap_used), "N/A");
-    snprintf(dst->heap_free, sizeof(dst->heap_free), "N/A");
+    snprintf(dst->heap_used, sizeof(dst->heap_used), "Unknown");
+    snprintf(dst->heap_free, sizeof(dst->heap_free), "Unknown");
 #endif
 }
 
-// Print logo and info.
+// Print logo and info
 void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     sysinfo_dynamic_t dyn;
     sysinfo_fetch(&dyn);
     sysinfo_hwinfo_t hw;
     sysinfo_hwinfo_fetch(&hw);
 
+    // All data lines
     char header[64], separator[32];
-    snprintf(header, sizeof(header), "%s@%s", board_info.username, board_info.hostname);
-    snprintf(separator, sizeof(separator), "----------------");
-
-    // All your data lines
-    char os_line[64], kernel_line[64], mcu_line[64], build_line[64],
+    char os_line[64], kernel_line[64], mcu_line[64], build_line[64], 
          flash_line[64], ram_line[64], uptime_line[64], heap_line[64];
 
-    snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
-    snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
+    snprintf(header,      sizeof(header), "%s@%s", board_info.username, board_info.hostname);
+    snprintf(separator,   sizeof(separator), "----------------");
     snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %luh %lum %lus", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
     snprintf(build_line,  sizeof(build_line),  "Build:   %s", board_info.build_date);
     snprintf(mcu_line,    sizeof(mcu_line),    "MCU:     %s", board_info.mcu);
@@ -148,7 +148,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     }
 }
 
-// Wrapper for shell output.
+// Wrapper for shell output
 void rt_putline(void *ctx, const char *line) {
     rt_kprintf("%s\n", line);
 }

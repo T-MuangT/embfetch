@@ -5,9 +5,9 @@
 #include "embed_sysinfo.h"
 #include "logo.h"
 #include "uart.h"
-#include "board.h"      // define BOARD_NAME and MCU_NAME here, falls back to "Unknown" otherwise
+//#include "board.h"      // define BOARD_NAME and MCU_NAME in your board header then uncomment
 
-// Static board info fetching.
+// Static board info fetching
 static const sysinfo_static_t board_info = {
     .username       = "root",
     .os_name        = "FreeRTOS",
@@ -21,7 +21,7 @@ static const sysinfo_static_t board_info = {
 #endif
 };
 
-// Byte formatting.
+// Byte formatting
 static void format_size(char *dst, size_t len, size_t bytes) {
     if (bytes >= 1024 * 1024) {
         snprintf(dst, len, "%uMB", (unsigned int)(bytes >> 20));
@@ -32,8 +32,9 @@ static void format_size(char *dst, size_t len, size_t bytes) {
     }
 }
 
-// Hardware info fetching. No devicetree in FreeRTOS, so sizes come from
-// FreeRTOSConfig.h / your BSP. Define these there or pass via makefile.
+// Hardware info fetching
+// No devicetree in FreeRTOS, so sizes come from FreeRTOSConfig.h or your BSP
+// Define these there or pass via makefile
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
 #if defined(SYSINFO_RAM_SIZE)
     format_size(dst->ram, sizeof(dst->ram), SYSINFO_RAM_SIZE);
@@ -81,14 +82,13 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     sysinfo_hwinfo_t hw;
     sysinfo_hwinfo_fetch(&hw);
 
+    // All data lines
     char header[64], separator[32];
-    snprintf(header, sizeof(header), "%s@%s", board_info.username, board_info.hostname);
-    snprintf(separator, sizeof(separator), "----------------");
-
-    // All your data lines
     char os_line[64], kernel_line[64], mcu_line[64], build_line[64], 
          flash_line[64], ram_line[64], uptime_line[64], heap_line[64];
 
+    snprintf(header,      sizeof(header), "%s@%s", board_info.username, board_info.hostname);
+    snprintf(separator,   sizeof(separator), "----------------");
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
     snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %luh %lum %lus", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);

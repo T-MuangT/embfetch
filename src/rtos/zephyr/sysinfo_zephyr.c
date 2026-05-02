@@ -11,7 +11,7 @@
 #include <zephyr/devicetree.h>
 #endif
 
-// Static board info fetching.
+// Static board info fetching
 static const sysinfo_static_t board_info = {
     .username       = "root",
     .hostname       = CONFIG_BOARD,
@@ -31,7 +31,7 @@ static void format_size(char *dst, size_t len, size_t bytes) {
     }
 }
 
-// Hardware info fetching.
+// Hardware info fetching
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
 #if defined(CONFIG_SRAM_SIZE) && CONFIG_SRAM_SIZE > 0
@@ -56,7 +56,7 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
 #endif
 }
 
-// Dynamic info fetching.
+// Dynamic info fetching
 void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     // Uptime and kernel version
     uint32_t ver = sys_kernel_version_get();
@@ -84,21 +84,20 @@ void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     format_size(dst->heap_free, sizeof(dst->heap_free), stats.free_bytes);
 }
 
-// Print logo and info.
+// Print logo and info
 void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     sysinfo_dynamic_t dyn;
     sysinfo_fetch(&dyn);
     sysinfo_hwinfo_t hw;
     sysinfo_hwinfo_fetch(&hw);
 
+    // All data lines
     char header[64], separator[32];
-    snprintf(header, sizeof(header), "%s@%s", board_info.username, board_info.hostname);
-    snprintf(separator, sizeof(separator), "----------------");
-
-    // All your data lines
     char os_line[64], kernel_line[64], mcu_line[64], build_line[64], 
          flash_line[64], ram_line[64], uptime_line[64], heap_line[64];
 
+    snprintf(header,      sizeof(header), "%s@%s", board_info.username, board_info.hostname);
+    snprintf(separator,   sizeof(separator), "----------------");
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
     snprintf(uptime_line, sizeof(uptime_line), "Uptime:  %uh %um %us", dyn.uptime_h, dyn.uptime_m, dyn.uptime_s);
@@ -132,7 +131,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     }
 }
 
-// Wrapper for shell output.
+// Wrapper for shell output
 static void zephyr_shell_putline(void *ctx, const char *line) {
     shell_print((const struct shell *)ctx, "%s", line);
 }

@@ -7,7 +7,7 @@
 #include "embed_sysinfo.h"
 #include "logo.h"
 
-// Static board info fetching.
+// Static board info fetching
 static const sysinfo_static_t board_info = {
     .hostname   = CONFIG_ARCH_BOARD,
     .os_name    = "NuttX",
@@ -26,7 +26,7 @@ static void format_size(char *dst, size_t len, size_t bytes) {
     }
 }
 
-// Hardware info fetching.
+// Hardware info fetching
 void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
     // RAM
 #if defined(CONFIG_RAM_SIZE) && CONFIG_RAM_SIZE > 0
@@ -43,13 +43,15 @@ void sysinfo_hwinfo_fetch(sysinfo_hwinfo_t *dst) {
 #endif
 }
 
-// Dynamic info fetching.
+// Dynamic info fetching
 void sysinfo_fetch(sysinfo_dynamic_t *dst) {
-    // Uptime and kernel version
+    // Kernel version
     struct utsname uts;
     uname(&uts);
     snprintf(dst->kernel_version, sizeof(dst->kernel_version),
              "NuttX %s", uts.release);
+
+    // Uptime
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     uint32_t uptime_s = (uint32_t)ts.tv_sec;
@@ -71,20 +73,20 @@ void sysinfo_fetch(sysinfo_dynamic_t *dst) {
     snprintf(dst->username, sizeof(dst->username), "%s", login ? login : "root");
 }
 
-// Print logo and info.
+// Print logo and info
 void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     sysinfo_dynamic_t dyn;
     sysinfo_fetch(&dyn);
     sysinfo_hwinfo_t hw;
     sysinfo_hwinfo_fetch(&hw);
 
+    // All data lines
     char header[64], separator[32];
-    snprintf(header, sizeof(header), "%s@%s", dyn.username, board_info.hostname);
-    snprintf(separator, sizeof(separator), "----------------");
-
-    // All your data lines
     char os_line[64], kernel_line[64], mcu_line[64], build_line[64], 
          flash_line[64], ram_line[64], uptime_line[64], heap_line[64];
+
+    snprintf(header,      sizeof(header), "%s@%s", dyn.username, board_info.hostname);
+    snprintf(separator,   sizeof(separator), "----------------");
 
     snprintf(os_line,     sizeof(os_line),     "OS:      %s", board_info.os_name);
     snprintf(kernel_line, sizeof(kernel_line), "Kernel:  %s", dyn.kernel_version);
@@ -119,7 +121,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
     }
 }
 
-// Wrapper for shell output.
+// Wrapper for shell output
 static void nuttx_putline(void *ctx, const char *line) {
     (void)ctx;
     printf("%s\n", line);
