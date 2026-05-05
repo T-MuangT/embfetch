@@ -4,7 +4,7 @@
 #include "board.h"
 #include <stdio.h>
 #include <string.h>
-#include "embed_sysinfo.h"
+#include "rtos_sysinfo.h"
 #include "logo.h"
 
 //#include "board.h"      // define BOARD_NAME and SOC_NAME then uncomment

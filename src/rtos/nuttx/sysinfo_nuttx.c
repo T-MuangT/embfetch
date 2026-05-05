@@ -4,7 +4,7 @@
 #include <sys/utsname.h>
 #include <unistd.h>
 #include <time.h>
-#include "embed_sysinfo.h"
+#include "rtos_sysinfo.h"
 #include "logo.h"
 
 // Static board info fetching

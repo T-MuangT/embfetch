@@ -1,5 +1,5 @@
 #include <tx_api.h>
-#include "embed_sysinfo.h"
+#include "rtos_sysinfo.h"
 #include "logo.h"
 #include "uart.h"
 //#include "board.h"      // define BOARD_NAME and MCU_NAME in your board header then uncomment

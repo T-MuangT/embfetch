@@ -1,5 +1,5 @@
 #include <nuttx/config.h>
-#include "embed_sysinfo.h"
+#include "rtos_sysinfo.h"
 
 int main(int argc, FAR char *argv[])
 {

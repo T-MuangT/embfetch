@@ -1,5 +1,5 @@
-#ifndef EMBED_SYSINFO_H
-#define EMBED_SYSINFO_H
+#ifndef RTOS_SYSINFO_H
+#define RTOS_SYSINFO_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -66,4 +66,4 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx);
 void sysinfo_print_file(FILE *f);
 void sysinfo_print_puts(void (*puts_fn)(const char *));
 
-#endif // EMBED_SYSINFO_H
+#endif // RTOS_SYSINFO_H

@@ -7,7 +7,7 @@
 #if !defined(SYSINFO_NO_MALLINFO)
 #  include <stdlib.h>
 #endif
-#include "embed_sysinfo.h"
+#include "rtos_sysinfo.h"
 #include "logo.h"
 
 //#include "board.h"        // define these data in your board header then uncomment
