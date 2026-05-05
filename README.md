@@ -1,6 +1,6 @@
-# Embfetch
+# Embfetch RTOS
 
-Embfetch is a C library for displaying a system information in summary along with an ASCII logo, akin to Neofetch, but for real-time operating systems such as Zephyr and FreeRTOS.
+Embfetch RTOS is a C library for displaying a system information in summary along with an ASCII logo, akin to Neofetch, but for real-time operating systems such as Zephyr and FreeRTOS.
 
 ## Installation
 
