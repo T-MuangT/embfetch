@@ -1,5 +1,7 @@
 config EXAMPLES_EMBFETCH
-    tristate "System Info (neofetch-style)"
+    tristate "Embfetch: Neofetch-style system information display command"
     default n
     ---help---
-        Prints board info, kernel version, uptime, and memory usage.
+        Prints system information in a neofetch-style summary
+        including board info, kernel version, uptime, and
+        memory usage.

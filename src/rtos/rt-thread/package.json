@@ -1,0 +1,7 @@
+{
+    "name": "embfetch",
+    "description": "Neofetch-style system information display for RT-Thread",
+    "keywords": ["sysinfo", "shell", "debug"],
+    "version": "latest",
+    "license": "MIT"
+}

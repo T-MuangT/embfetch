@@ -34,14 +34,14 @@ Currently, the supported systems are Zephyr, RT-Thread, NuttX, ThreadX, FreeRTOS
 6. After compilation, your kernel's shell will now have `embfetch` as available command.
 ### FreeRTOS
 1. FreeRTOS has no built-in shell option. However, FreeRTOS has FreeRTOS + CLI as its official shell library. Make sure shell library (FreeRTOS + CLI, vendor, or custom) is set up.
-2. Copy `sysinfo_rtos_common.c` from `src`, `embed_sysinfo.h` from `src/include`, `sysinfo_freertos.c` from `src/rtos/freertos`, and `logo.h` from `src/rtos/freertos/include` into your kernel's `src` directory.
+2. Copy `sysinfo_rtos_common.c` from `src`, `embed_sysinfo.h` from `src/include`, `sysinfo_freertos.c` from `src/rtos/freertos/freertos`, and `logo.h` from `src/rtos/freertos/freertos/include` into your kernel's `src` directory.
 3. Add entry and register `embfetch` command into your main or shell source file.
 4. Add `sysinfo_rtos_common.c` and `sysinfo_freertos.c` into `SRCS` in Makefile.
 5. Run `make` to compile the library into kernel.
 6. After compilation, your kernel's shell will now have `embfetch` as available command.
 ### ESP-IDF
 1. Build the ESP-IDF project with `system/console` template using Espressif IDE. Can be either basic or advanced.
-2. Copy `sysinfo_rtos_common.c` from `src`, `embed_sysinfo.h` from `src/include`, `sysinfo_esp-idf.c` from `src/rtos/esp-idf`, and `logo.h` from `src/rtos/esp-idf/include` into your kernel's `main` directory.
+2. Copy `sysinfo_rtos_common.c` from `src`, `embed_sysinfo.h` from `src/include`, `sysinfo_esp-idf.c` from `src/rtos/freertos/esp-idf`, and `logo.h` from `src/rtos/freertos/esp-idf/include` into your kernel's `main` directory.
 3. Add entry and register `embfetch` command into your main or shell source file.
 4. Add `sysinfo_rtos_common.c sysinfo_esp-idf.c` into your `main/CMakeLists.txt`'s `SRCS`.
 5. Add `console esp_timer heap esp_system esp_hw_support` into your `main/CMakeLists.txt`'s `REQUIRES`.

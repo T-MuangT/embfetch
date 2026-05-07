@@ -1,0 +1,7 @@
+config EMBFETCH
+    bool "Embfetch: Neofetch-style system information display command"
+    depends on SHELL
+    help
+      Prints system information in a neofetch-style summary
+      including board info, kernel version, uptime, and
+      memory usage.
