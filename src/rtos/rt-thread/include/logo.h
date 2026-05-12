@@ -5,6 +5,8 @@
 #define ANSI_BRIGHT_CYAN "\033[96m"
 #define ANSI_RESET   "\033[0m"
 
+#define LOGO_INFO_COLUMN "\033[50G"
+
 static const char *logo[] = {
     ANSI_BRIGHT_CYAN "     =+++++++++++++++++++=                   " ANSI_RESET,
     ANSI_CYAN "  *" ANSI_BRIGHT_CYAN "+++++++++++++++++++++++++++++             " ANSI_RESET,

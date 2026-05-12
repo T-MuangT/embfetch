@@ -4,6 +4,8 @@
 #define ANSI_YELLOW "\033[33m"
 #define ANSI_RESET  "\033[0m"
 
+#define LOGO_INFO_COLUMN "\033[40G"
+
 static const char *logo[] = {
     ANSI_YELLOW "         ************         " ANSI_RESET,
     ANSI_YELLOW "     *******************      " ANSI_RESET,

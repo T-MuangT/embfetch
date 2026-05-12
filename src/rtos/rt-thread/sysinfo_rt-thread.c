@@ -141,7 +141,7 @@ void sysinfo_print(sysinfo_putline_fn putline, void *ctx) {
 
         char line[256];
         if (info_part[0] != '\0')
-            snprintf(line, sizeof(line), "%s\033[50G%s", logo_part, info_part);
+            snprintf(line, sizeof(line), "%s" LOGO_INFO_COLUMN "%s", logo_part, info_part);
         else
             snprintf(line, sizeof(line), "%s", logo_part);
         putline(ctx, line);

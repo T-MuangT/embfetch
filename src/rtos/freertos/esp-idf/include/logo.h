@@ -4,6 +4,8 @@
 #define ANSI_RED   "\033[31m"
 #define ANSI_RESET   "\033[0m"
 
+#define LOGO_INFO_COLUMN "\033[60G"
+
 static const char *logo[] = {
     ANSI_RED "                   <<<<<<<<<~           " ANSI_RESET,
     ANSI_RED "      ~    <<<<<<!   <<<<<<<<<<<        " ANSI_RESET,
@@ -12,7 +14,7 @@ static const char *logo[] = {
     ANSI_RED "  <<<     =<<<<<<<<<<<<<<<<<  <<<<<<<   " ANSI_RESET,
     ANSI_RED " <<<    <<<<<    <<<<<<<<<<<<< <<<<<<<! " ANSI_RESET,
     ANSI_RED "=<<  =<<<<<<<<<<<<  !<<<<<<<<<<  <<<<<< " ANSI_RESET,
-    ANSI_RED "<<<!<<<<<<<<<<<<<<<<<I <<<<<<<<<< !<<<<<" ANSI_RESET,
+    ANSI_RED "<<< <<<<<<<<<<<<<<<<<I <<<<<<<<<< !<<<<<" ANSI_RESET,
     ANSI_RED "<< <<<<<<<<<<<<<<<<<<<<! <<<<<<<<< !<<<<" ANSI_RESET,
     ANSI_RED "<< <<<<<<<   t<<<<<<<<<<<! <<<<<<<<  <<<" ANSI_RESET,
     ANSI_RED "<< <<<<<<<<<<<   ><<<<<<<<= <<<<<<<< <<<" ANSI_RESET,
@@ -22,7 +24,7 @@ static const char *logo[] = {
     ANSI_RED " <<<         <<<<<<<< !<<<<<<< <<<<<<<  " ANSI_RESET,
     ANSI_RED "  <<<  !<<<<<  <<<<<<= <<<<<<< <<<<<<=  " ANSI_RESET,
     ANSI_RED "   <<< <<<<<<  <<<<<<< <<<<<<< <<<<<    " ANSI_RESET,
-    ANSI_RED "    =<<<<<<<<  <<<<<<< <<<<<<<          " ANSI_RESET,
+    ANSI_RED "    =<< <<<<<  <<<<<<< <<<<<<<          " ANSI_RESET,
     ANSI_RED "      <<<=    !<<<<<<< <<<<<<<   !<<<<  " ANSI_RESET,
     ANSI_RED "       i<<<<   <<<<<<  ~<<<<<  <<<<=    " ANSI_RESET,
     ANSI_RED "          <<<<<<<<       <<<<<<<<       " ANSI_RESET,

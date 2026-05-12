@@ -5,6 +5,8 @@
 #define ANSI_MAGENTA "\033[35m"
 #define ANSI_RESET "\033[0m"
 
+#define LOGO_INFO_COLUMN "\033[50G"
+
 static const char *logo[] = {
     ANSI_BLUE "                            =:::::::------=  " ANSI_RESET,
     ANSI_BLUE "                           ++++-:-------=++  " ANSI_RESET,
