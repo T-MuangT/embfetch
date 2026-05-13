@@ -6,21 +6,23 @@
 #include <string.h>
 #include "rtos_sysinfo.h"
 #include "logo.h"
+//#include "board.h"            // define BOARD_NAME and SOC_NAME then uncomment
+//#include "kernel_version.h"   // define RT_VERSION, RT_SUBVERSION, RT_REVISION then uncomment
 
-//#include "board.h"      // define BOARD_NAME and SOC_NAME then uncomment
+// Hardcoded BOARD_NAME and SOC_NAME if not defined in board.h
 #ifndef BOARD_NAME
-    #define BOARD_NAME "qemu-vexpress-a9"
+    #define BOARD_NAME "Unknown"
 #endif
 
 #ifndef SOC_NAME
-    #define SOC_NAME "arm-cortex-a9"
+    #define SOC_NAME "Unknown"
 #endif
 
 // Hardcoded kernel version
 #ifndef RT_VERSION
-    #define RT_VERSION 4
+    #define RT_VERSION 5
     #define RT_SUBVERSION 0
-    #define RT_REVISION 2
+    #define RT_REVISION 0
 #endif
 
 // Static board info fetching
